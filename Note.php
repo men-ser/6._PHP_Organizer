@@ -35,7 +35,7 @@ class Note {
         return $this->idNote;
     }
     public function show_note(){
-        $str = "Номер заметки: ".$this->idNote."<br>"." Дата задания: ".$this->dateEnd."<br>"."Заметка: ".$this->content;
+        $str = "<br />"."Номер заметки: ".$this->idNote."<br />"." Дата задания: ".$this->dateEnd."<br />"."Заметка: ".$this->content."<br />";
         echo $str;
     }
     function __destruct() { }
@@ -98,7 +98,8 @@ class Organaizer { /*extends Note*/
         if(count($this->Notes)>0){
         foreach ($this->Notes as $note)
         { $note->show_note();
-            echo "<br />";}}
+            }}
+
     }
 
     public function save ()
@@ -126,4 +127,6 @@ class Organaizer { /*extends Note*/
 
 
 }
+
+
 ?>

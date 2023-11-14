@@ -32,6 +32,8 @@
         border-top-right-radius: 20px;
         border-bottom-right-radius: 20px;
         font-size: 0.7em;
+        overflow: hidden;
+        max-height: 25px;
         }
     .date{
         padding:2px;
@@ -60,6 +62,7 @@
         flex-direction: row;
         display: flex;
         margin: 2px;
+
     }
 
     .button{
@@ -96,7 +99,7 @@
     }
     table {
         margin-top:30px;
-        border:1px solid red;
+
     border-collapse: collapse; }
 
     th:first-child,td:first-child {width: 100px; border:1px solid red;}
@@ -107,7 +110,7 @@
   include 'Note.php';
   $obj = new Note();
   $notes = new Organaizer($obj);
-  $printNotes=new Organaizer($obj);
+  $printNotes= new Organaizer($obj);
   ?>
 
 </head>
@@ -119,9 +122,10 @@
             <?php
             session_start();
             $counter=0;
-            if (file_exists('notes.txt')) {
+                if (file_exists('notes.txt')) {
                 $notes->load();
-                $counter = $notes->cnt();
+                $counter = $notes->cnt();}
+
                 if(isset($_SESSION["note"])){
                     $obj=$_SESSION['note'];
                     unset($_SESSION['note']);
@@ -132,17 +136,26 @@
                     $idNote = (int)htmlspecialchars($_POST['delNote']);
                     $notes->deleteNote($idNote);
                     }
+
                 $notes->save();
 
-                if(isset($_POST["btnDay"]))
+                if(isset($_POST["btnDay"])){
+                    $printNotes->deleteNote(0);
                     foreach($notes->getDay() as $note)
                     $printNotes->addNote($note);
-                else if (isset($_POST["btnWeek"]))
+                }
+
+                else if (isset($_POST["btnWeek"])){
+                    $printNotes->deleteNote(0);
                     foreach($notes->getWeek() as $note)
+                        $printNotes->addNote($note);}
+
+                else if (isset($_POST["btnMonth"])) {
+                    $printNotes->deleteNote(0);
+                    foreach ($notes->getMonth() as $note)
                         $printNotes->addNote($note);
-                else if (isset($_POST["btnMonth"]))
-                    foreach($notes->getMonth() as $note)
-                        $printNotes->addNote($note);
+
+                }
                 else $printNotes=$notes;
 
                 foreach($printNotes->getNotes() as $note){
@@ -150,9 +163,6 @@
                          <div class="note middle">'.$note->getContent().'</div>
                          <div ><input type="submit"  name="delNote" value="'.$note->getIdNote().'" class="del middle center"></div></div>';/*onClick="myHandler()"   id="'.$note->getIdNote().'"  */
                 }
-
-            }
-
 
             ?>
 
@@ -166,38 +176,27 @@
         </div>
     </form>
 
-<table id="table" style="display: none">
-    <tr><th>Date end</th><th>Task</th></tr>
-<tr id="tbody">
-</tr>
-</table>
-
-    <script>
-        function myHandler (e) {
-            //let num = e.currentTarget.appid;
-            let table = document.getElementById("table");
-            table.style.display = "block";
-        }
-        function getDay () {
-        <?php
-           //print_r($notes->getDay());?>
-        }
-
-        function getWeek() {
-        }
-        function getMonth () {
-
-        }
-
-
-    </script>
-
-
+   <?php if(isset($_POST["btnDay"])){
+       printTable ($printNotes);}
+    else if (isset($_POST["btnWeek"])){
+        printTable ($printNotes);}
+    else if (isset($_POST["btnMonth"])) {
+        printTable ($printNotes);}?>
 </body>
 </html>
 
 
 <?php
+//$printNotes->show();
 //$GLOBALS['notes']->show();
+ function printTable ($printNotes){
+     echo' <table id="table" style="display: block">
+    <tr><th>Date end</th><th>Task</th></tr>';
+     foreach($printNotes->getNotes() as $note){
+         echo  ' <tr id="tbody"><td>'.$note->getDateEnd().' </td> 
+              <td>'.$note->getContent().' </td></tr>';
+     }
+     echo '</table>';
+}
 ?>
 
