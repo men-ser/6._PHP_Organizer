@@ -132,10 +132,13 @@
                     $obj->setIdNote($counter);
                     $notes->addNote($obj);
                 }
-                if(isset($_POST["delNote"])){
-                    $idNote = (int)htmlspecialchars($_POST['delNote']);
-                    $notes->deleteNote($idNote);
-                    }
+
+                if(count($_POST)!=0){ // извлечение id из ключа
+                $id=array_values($_POST);
+                if($id[0]=='-'){
+                    $idNote = array_keys($_POST);
+                    $notes->deleteNote($idNote[0]);
+                    }}
 
                 $notes->save();
 
@@ -161,7 +164,7 @@
                 foreach($printNotes->getNotes() as $note){
                     echo '<div class=" item " ><div class="date middle">'.$note->getDateEnd().'</div>
                          <div class="note middle">'.$note->getContent().'</div>
-                         <div ><input type="submit"  name="delNote" value="'.$note->getIdNote().'" class="del middle center"></div></div>';/*onClick="myHandler()"   id="'.$note->getIdNote().'"  */
+                         <div ><input type="submit"  name="'.$note->getIdNote().'" value="-" class="del middle center"></div></div>';/*onClick="myHandler()"   id="'.$note->getIdNote().'"  */
                 }
 
             ?>

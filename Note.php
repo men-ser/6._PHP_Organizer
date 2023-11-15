@@ -124,9 +124,5 @@ class Organaizer { /*extends Note*/
        /* parent::__destruct();*/
     }
 
-
-
 }
-
-
 ?>
